@@ -1,0 +1,20 @@
+# settings
+name: "douyin"
+port: 8080
+logsAddress: "./logs/"
+
+mysql:
+  name: "admin"
+  host: "127.0.0.1"
+  port: 3306
+  password: "008523"
+  dbName: "demo"
+
+jwt:
+  key: "SvAVW4EIr9NVnVzY"
+
+minio:
+  endpoint: "127.0.0.1:9000/"
+  ID: "qbb"
+  Key: "startqbb"
+
