@@ -1,5 +1,5 @@
 # settings
-name: "douyin"
+name: "dousheng"
 port: 8080
 logsAddress: "./logs/"
 
