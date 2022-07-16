@@ -18,9 +18,9 @@ type LoginReq struct {
 
 type GetUser struct {
 	//user_id
-	UserID int `form:"user_id" json:"user_id" binding:"required"`
+	UserID int `form:"user_id" json:"user_id"`
 	//token
-	Token string `form:"token" json:"token" binding:"required"`
+	Token string `form:"token" json:"token"`
 }
 
 //视频相关

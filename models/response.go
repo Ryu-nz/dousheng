@@ -29,3 +29,17 @@ func GetUserResp(user User, IsFollow bool) UserResp {
 	}
 	return UserResp
 }
+
+func GetVedioResp(vedio Vedio, auther UserResp, IsFavorite bool) VedioResp {
+	VedioResp := VedioResp{
+		Vid:           vedio.Vid,
+		Auther:        auther,
+		PlayURL:       vedio.PlayURL,
+		CoverURL:      vedio.CoverURL,
+		FavoriteCount: vedio.FavoriteCount,
+		CommentCount:  vedio.CommentCount,
+		IsFavorite:    IsFavorite,
+		Title:         vedio.Title,
+	}
+	return VedioResp
+}

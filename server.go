@@ -24,5 +24,6 @@ func main() {
 func init() {
 	Init.Config()
 	Init.MysqlDB()
+	Init.Logger()
 	Router = Init.Routers()
 }
