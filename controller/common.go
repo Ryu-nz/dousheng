@@ -21,7 +21,7 @@ type User struct {
 }
 
 //视频对应结构
-type Vedio struct {
+type Video struct {
 	Vid           int       `gorm:"column:vid;primary_key" json:"vid"`
 	UID           int       `gorm:"column:uid" json:"uid"`
 	Title         string    `gorm:"column:title" json:"title"`

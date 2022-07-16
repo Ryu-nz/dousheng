@@ -13,7 +13,7 @@ type FeedReq struct {
 }
 
 //视频发布请求
-type VedioPublishReq struct {
+type VideoPublishReq struct {
 	Token string `form:"token" json:"token" binding:"required"`
 	Data  []byte `form:"data" json:"data" binding:"required"`
 	Title string `form:"titile" json:"title" binding:"required"`
@@ -21,7 +21,7 @@ type VedioPublishReq struct {
 
 
 //返回视频结构
-type VedioResp struct {
+type VideoResp struct {
 	Vid           int      `form:"id" json:"id"`
 	Auther        UserResp `form:"auther" json:"auther"`
 	PlayURL       string   `json:"play_url"`
@@ -35,46 +35,47 @@ type VedioResp struct {
 //返回视频流结构
 type FeedResp struct {
 	Response
-	Feed []VedioResp
+	VideoList []VideoResp `json:"video_list,omitempty"`
+	NextTime  int64   `json:"next_time,omitempty"`
 }
 
-//通过vedio数据和user数据获取返回视频数据
-func GetVedioResp(vedio Vedio, auther UserResp, IsFavorite bool) VedioResp {
-	VedioResp := VedioResp{
-		Vid:           vedio.Vid,
+//通过Video数据和user数据获取返回视频数据
+func GetVideoResp(Video Video, auther UserResp, IsFavorite bool) VideoResp {
+	VideoResp := VideoResp{
+		Vid:           Video.Vid,
 		Auther:        auther,
-		PlayURL:       vedio.PlayURL,
-		CoverURL:      vedio.CoverURL,
-		FavoriteCount: vedio.FavoriteCount,
-		CommentCount:  vedio.CommentCount,
+		PlayURL:       Video.PlayURL,
+		CoverURL:      Video.CoverURL,
+		FavoriteCount: Video.FavoriteCount,
+		CommentCount:  Video.CommentCount,
 		IsFavorite:    IsFavorite,
-		Title:         vedio.Title,
+		Title:         Video.Title,
 	}
-	return VedioResp
+	return VideoResp
 }
 
 func Feed(c *gin.Context) {
 	FeedReq := FeedReq{}
 	c.ShouldBind(&FeedReq) //接收请求数据
-	var vedio []Vedio
-	var feed []VedioResp
+	var Video []Video
+	var feed []VideoResp
 	var user User
 	db := global.DB
 	max := 30
 
-	db.Find(&vedio) //从数据中查找vedio，构造vedioResp
-	if len(vedio) > max {
-		vedio = vedio[:max]
+	db.Find(&Video) //从数据中查找Video，构造VideoResp
+	if len(Video) > max {
+		Video = Video[:max]
 	}
-	for _, v := range vedio {
+	for _, v := range Video {
 		db.Where("user_id = ?", v.UID).Find(&user)
 		userResp := GetUserResp(user, false)
-		media := GetVedioResp(v, userResp, false)
+		media := GetVideoResp(v, userResp, false)
 		feed = append(feed, media)
 	}
 
 	c.JSON(200, FeedResp{
 		Response: Response{StatusCode: 0},
-		Feed:     feed,
+		VideoList:     feed,
 	})
 }
