@@ -1,7 +1,7 @@
 package router
 
 import (
-	"dousheng/service"
+	"dousheng/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +10,7 @@ func Feed(Router *gin.RouterGroup) {
 	r := Router.Group("feed")
 	{
 		r.GET("", func(c *gin.Context) {
-			service.GetVedioList(c)
+			controller.Feed(c)
 		})
 	}
 }
