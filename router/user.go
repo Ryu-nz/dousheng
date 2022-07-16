@@ -1,7 +1,7 @@
 package router
 
 import (
-	"dousheng/service"
+	"dousheng/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,15 +11,15 @@ func User(Router *gin.RouterGroup) {
 	r := Router.Group("user")
 	{
 		r.GET("/", func(c *gin.Context) {
-			service.GetUser(c)
+			controller.GetUser(c)
 		})
 
 		r.POST("register/", func(c *gin.Context) {
-			service.UserRegister(c)
+			controller.UserRegister(c)
 		})
 
 		r.POST("login/", func(c *gin.Context) {
-			service.PasswordLogin(c)
+			controller.PasswordLogin(c)
 		})
 	}
 }

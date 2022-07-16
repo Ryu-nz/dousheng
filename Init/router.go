@@ -12,8 +12,9 @@ import (
 func Routers() *gin.Engine {
 	r := gin.Default()
 	r.Use(middlewares.GinLogger(), middlewares.GinRecovery(true))
-	ApiGroup := r.Group("/dousheng/")
+	ApiGroup := r.Group("/douyin/")
 	router.User(ApiGroup)
+	router.Feed(ApiGroup)
 	color.Green("Routers Initialize")
 	return r
 }

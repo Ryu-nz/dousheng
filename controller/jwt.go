@@ -1,8 +1,7 @@
-package middlewares
+package controller
 
 import (
 	"dousheng/global"
-	"dousheng/response"
 	"errors"
 	"fmt"
 	"net/http"
@@ -37,7 +36,7 @@ func JWTAuth() gin.HandlerFunc {
 		//取token
 		token := c.Query("token")
 		if token == "" {
-			response.Msg(c, http.StatusUnauthorized, 401, "请登录", "")
+			c.JSON(http.StatusUnauthorized, Response{StatusCode: -1, StatusMsg: "请登录"})
 			c.Abort() //需先中断中间件，return不会中断中间件
 			return
 		}
@@ -46,11 +45,11 @@ func JWTAuth() gin.HandlerFunc {
 		msg, err := j.ParseToken(token)
 		if err != nil {
 			if err == TokenExpired {
-				response.Msg(c, http.StatusUnauthorized, 401, "授权已过期", "")
+				c.JSON(http.StatusUnauthorized, Response{StatusCode: -1, StatusMsg: "授权已过期"})
 				c.Abort()
 				return
 			}
-			response.Msg(c, http.StatusUnauthorized, 401, "未登陆", "")
+			c.JSON(http.StatusUnauthorized, Response{StatusCode: -1, StatusMsg: "未登录"})
 			c.Abort()
 			return
 		}
@@ -121,4 +120,27 @@ func (j *JWT) RefreshToken(tokenString string) (string, error) {
 		return j.CreateToken(*claims)
 	}
 	return "", TokenInvalid
+}
+
+func CreateToken(c *gin.Context, UserID int, UserName string, Role int) string {
+	//生成token信息
+	j := NewJWT()
+	claims := CustomClaims{
+		UserID:   UserID,
+		UserName: UserName,
+		Role:     Role,
+		StandardClaims: jwt.StandardClaims{
+			NotBefore: time.Now().Unix(),
+			// TODO 设置token过期时间
+			ExpiresAt: time.Now().Unix() + 60*60*24*30, //token -->30天过期
+			Issuer:    "test",
+		},
+	}
+	//生成token
+	token, err := j.CreateToken(claims)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1})
+		return ""
+	}
+	return token
 }
