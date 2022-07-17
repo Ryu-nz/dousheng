@@ -14,7 +14,7 @@ jwt:
   key: "SvAVW4EIr9NVnVzY"
 
 minio:
-  endpoint: "127.0.0.1:9000/"
-  ID: "qbb"
-  Key: "startqbb"
+  endpoint: "127.0.0.1:9001/"
+  ID: "wbbp"
+  Key: "wbbpstart"
 

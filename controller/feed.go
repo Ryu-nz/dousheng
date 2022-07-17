@@ -12,14 +12,6 @@ type FeedReq struct {
 	Token      string `form:"token" json:"token"`
 }
 
-//视频发布请求
-type VideoPublishReq struct {
-	Token string `form:"token" json:"token" binding:"required"`
-	Data  []byte `form:"data" json:"data" binding:"required"`
-	Title string `form:"titile" json:"title" binding:"required"`
-}
-
-
 //返回视频结构
 type VideoResp struct {
 	Vid           int      `form:"id" json:"id"`
@@ -36,7 +28,7 @@ type VideoResp struct {
 type FeedResp struct {
 	Response
 	VideoList []VideoResp `json:"video_list,omitempty"`
-	NextTime  int64   `json:"next_time,omitempty"`
+	NextTime  int64       `json:"next_time,omitempty"`
 }
 
 //通过Video数据和user数据获取返回视频数据
@@ -60,22 +52,21 @@ func Feed(c *gin.Context) {
 	var Video []Video
 	var feed []VideoResp
 	var user User
-	db := global.DB
 	max := 30
 
-	db.Find(&Video) //从数据中查找Video，构造VideoResp
+	global.DB.Find(&Video) //从数据中查找Video，构造VideoResp
 	if len(Video) > max {
 		Video = Video[:max]
 	}
 	for _, v := range Video {
-		db.Where("user_id = ?", v.UID).Find(&user)
+		global.DB.Where("user_id = ?", v.UID).Find(&user)
 		userResp := GetUserResp(user, false)
 		media := GetVideoResp(v, userResp, false)
 		feed = append(feed, media)
 	}
 
 	c.JSON(200, FeedResp{
-		Response: Response{StatusCode: 0},
-		VideoList:     feed,
+		Response:  Response{StatusCode: 0},
+		VideoList: feed,
 	})
 }
