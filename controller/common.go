@@ -1,13 +1,13 @@
 package controller
 
-import "time"
-
+import (
+	"time"
+)
 
 type Response struct {
 	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg,omitempty"`
 }
-
 
 //用户对应结构体
 type User struct {

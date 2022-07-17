@@ -41,7 +41,7 @@ type UserResp struct {
 	IsFollow      bool   `json:"is_follow"`
 }
 
-//处理注册请求处
+//处理注册请求
 func UserRegister(c *gin.Context) {
 	RegistrForm := RegisterReq{}
 	//注意通过ShouldBind接收数据后再使用PostForm()无法再接到数据
@@ -69,9 +69,7 @@ func UserRegister(c *gin.Context) {
 func PasswordLogin(c *gin.Context) {
 	LoginForm := LoginReq{}
 	if err := c.ShouldBind(&LoginForm); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: "请求数据出错"})
 		return
 	}
 	var user User
