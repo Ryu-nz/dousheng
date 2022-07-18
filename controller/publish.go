@@ -10,6 +10,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//publish list请求
+type ListReq struct {
+	UserID int    `form:"user_id" binf:"required"`
+	Token  string `form:"token" binding:"required"`
+}
+
+//publish list 返回
+type ListResp struct {
+	Response
+	VideoList []VideoResp `json:"video_list,omitempty"`
+}
+
+//处理发布视频
 func Publish(c *gin.Context) {
 	//接收请求数据
 	token := c.PostForm("token")
@@ -49,4 +62,32 @@ func Publish(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, Response{StatusCode: 0, StatusMsg: "视频上传成功"})
+}
+
+//获取发布视频
+func PublishList(c *gin.Context) {
+	//接收请求数据并与token比对校验
+	ListReq := ListReq{}
+	if err := c.ShouldBind(&ListReq); err != nil {
+		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: err.Error() + "请求参数出错"})
+		return
+	}
+	if Msg, err := NewJWT().ParseToken(ListReq.Token); err != nil || Msg.UserID != ListReq.UserID {
+		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: "token数据错误"})
+		return
+	}
+	//根据user_id获取user和video
+	user, video, videoList := User{}, []Video{}, []VideoResp{}
+	global.DB.Find(&user, ListReq.UserID)
+	userResp := GetUserResp(user, false)
+	global.DB.Where("uid = ?", ListReq.UserID).Find(&video)
+	//构造video_list返回
+	for _, v := range video {
+		videoResp := GetVideoResp(v, userResp, false)
+		videoList = append(videoList, videoResp)
+	}
+	c.JSON(http.StatusOK, ListResp{
+		Response:  Response{StatusCode: 0},
+		VideoList: videoList,
+	})
 }

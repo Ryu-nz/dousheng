@@ -47,22 +47,23 @@ func GetVideoResp(Video Video, auther UserResp, IsFavorite bool) VideoResp {
 }
 
 func Feed(c *gin.Context) {
+	 //接收请求数据
 	FeedReq := FeedReq{}
-	c.ShouldBind(&FeedReq) //接收请求数据
+	c.ShouldBind(&FeedReq)
+	//从数据中查找Video，构造VideoResp
 	var Video []Video
 	var feed []VideoResp
 	var user User
 	max := 30
-
-	global.DB.Find(&Video) //从数据中查找Video，构造VideoResp
+	global.DB.Find(&Video) 
 	if len(Video) > max {
 		Video = Video[:max]
 	}
 	for _, v := range Video {
 		global.DB.Where("user_id = ?", v.UID).Find(&user)
 		userResp := GetUserResp(user, false)
-		media := GetVideoResp(v, userResp, false)
-		feed = append(feed, media)
+		videoResp := GetVideoResp(v, userResp, false)
+		feed = append(feed, videoResp)
 	}
 
 	c.JSON(200, FeedResp{

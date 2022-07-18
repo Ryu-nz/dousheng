@@ -12,5 +12,9 @@ func Publish(Router *gin.RouterGroup) {
 		r.POST("action/", func(c *gin.Context) {
 			controller.Publish(c)
 		})
+
+		r.GET("list/", func(c *gin.Context) {
+			controller.PublishList(c)
+		})
 	}
 }
