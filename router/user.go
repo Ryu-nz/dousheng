@@ -10,16 +10,10 @@ import (
 func User(Router *gin.RouterGroup) {
 	r := Router.Group("user")
 	{
-		r.GET("/", func(c *gin.Context) {
-			controller.GetUser(c)
-		})
+		r.GET("/", func(c *gin.Context) { controller.GetUser(c) })
 
-		r.POST("register/", func(c *gin.Context) {
-			controller.UserRegister(c)
-		})
+		r.POST("register/", func(c *gin.Context) { controller.UserRegister(c) })
 
-		r.POST("login/", func(c *gin.Context) {
-			controller.PasswordLogin(c)
-		})
+		r.POST("login/", func(c *gin.Context) { controller.UserLogin(c) })
 	}
 }

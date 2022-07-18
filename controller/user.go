@@ -30,7 +30,7 @@ func UserRegister(c *gin.Context) {
 }
 
 // 处理登录请求
-func PasswordLogin(c *gin.Context) {
+func UserLogin(c *gin.Context) {
 	//接收数据
 	LoginForm := LoginReq{}
 	if err := c.ShouldBind(&LoginForm); err != nil {
@@ -72,6 +72,5 @@ func GetUser(c *gin.Context) {
 			Response: Response{StatusCode: 0},
 			UserResp: GetUserResp(user, false),
 		})
-
 	}
 }

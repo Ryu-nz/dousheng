@@ -16,6 +16,8 @@ func Routers() *gin.Engine {
 	router.User(ApiGroup)
 	router.Feed(ApiGroup)
 	router.Publish(ApiGroup)
+	router.Favorite(ApiGroup)
+	router.Comment(ApiGroup)
 	color.Green("Routers Initialize")
 	return r
 }

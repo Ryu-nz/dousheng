@@ -33,7 +33,7 @@ func Feed(c *gin.Context) {
 		video = video[:max]
 	}
 	for _, v := range video {
-		global.DB.Where("user_id = ?", v.UID).Find(&user)
+		global.DB.Where("user_id = ?", v.Uid).Find(&user)
 		userResp := GetUserResp(user, false)
 		videoResp := GetVideoResp(v, userResp, false)
 		feed = append(feed, videoResp)

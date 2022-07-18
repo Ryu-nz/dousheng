@@ -9,8 +9,6 @@ import (
 func Feed(Router *gin.RouterGroup) {
 	r := Router.Group("feed")
 	{
-		r.GET("", func(c *gin.Context) {
-			controller.Feed(c)
-		})
+		r.GET("", func(c *gin.Context) { controller.Feed(c) })
 	}
 }

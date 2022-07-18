@@ -11,9 +11,9 @@ import (
 )
 
 //处理发布视频
-func Publish(c *gin.Context) {
+func PublishAction(c *gin.Context) {
 	//接收请求数据
-	actionReq := PublishAction{}
+	actionReq := PublishActionReq{}
 	if err := c.ShouldBind(actionReq); err != nil {
 		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: err.Error() + "请求数据出错"})
 	}
@@ -40,7 +40,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 	videoLatest := Video{
-		UID:        user_id,
+		Uid:        user_id,
 		Title:      actionReq.Title,
 		PlayURL:    "http://" + utils.GetIP() + ":9001/video/" + filename,
 		CreateTime: time.Now(), //创建时间

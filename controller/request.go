@@ -30,9 +30,9 @@ type FeedReq struct {
 
 //publish request
 //publish action请求
-type PublishAction struct {
-	Token string                 `form:"token" binding:"required"`
-	Title string                 `form:"title" binding:"required"`
+type PublishActionReq struct {
+	Token string                `form:"token" binding:"required"`
+	Title string                `form:"title" binding:"required"`
 	File  *multipart.FileHeader `form:"data" binding:"required"`
 }
 
@@ -40,4 +40,11 @@ type PublishAction struct {
 type ListReq struct {
 	UserID int    `form:"user_id" binding:"required"`
 	Token  string `form:"token" binding:"required"`
+}
+
+//favorite request
+type FavoriteActionReq struct {
+	Token      string `form:"token" binding:"required"`
+	VideoID    int    `form:"video_id" binding:"required"`
+	ActionType int    `form:"action_type" binding:"required"`
 }
