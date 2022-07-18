@@ -31,14 +31,3 @@ type Video struct {
 	CommentCount  int       `gorm:"column:comment_count" json:"comment_count"`
 	CreateTime    time.Time `gorm:"cloumn:create_time" json:"create_time"`
 }
-
-func GetUserResp(user User, IsFollow bool) UserResp {
-	UserResp := UserResp{
-		UserID:        user.UserID,
-		Username:      user.Username,
-		FollowCount:   user.FollowCount,
-		FollowerCount: user.FollowerCount,
-		IsFollow:      IsFollow,
-	}
-	return UserResp
-}
