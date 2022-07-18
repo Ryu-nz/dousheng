@@ -34,7 +34,9 @@ func Feed(c *gin.Context) {
 	}
 	for _, v := range video {
 		global.DB.Where("user_id = ?", v.Uid).Find(&user)
+		//关注待实现
 		userResp := GetUserResp(user, false)
+		//点赞待实现
 		videoResp := GetVideoResp(v, userResp, false)
 		feed = append(feed, videoResp)
 	}
