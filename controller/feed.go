@@ -6,31 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//视频Feed流请求
-type FeedReq struct {
-	LatestTime int    `form:"latest_time" json:"latest_time"`
-	Token      string `form:"token" json:"token"`
-}
-
-//返回视频结构
-type VideoResp struct {
-	Vid           int      `form:"id" json:"id"`
-	Auther        UserResp `form:"auther" json:"auther"`
-	PlayURL       string   `json:"play_url"`
-	CoverURL      string   ` json:"cover_url"`
-	FavoriteCount int      `json:"favorite_count"`
-	CommentCount  int      `json:"comment_count"`
-	IsFavorite    bool     `json:"is_favorite"`
-	Title         string   ` json:"title"`
-}
-
-//返回视频流结构
-type FeedResp struct {
-	Response
-	VideoList []VideoResp `json:"video_list,omitempty"`
-	NextTime  int64       `json:"next_time,omitempty"`
-}
-
 //通过Video数据和user数据获取返回视频数据
 func GetVideoResp(Video Video, auther UserResp, IsFavorite bool) VideoResp {
 	VideoResp := VideoResp{
@@ -47,22 +22,23 @@ func GetVideoResp(Video Video, auther UserResp, IsFavorite bool) VideoResp {
 }
 
 func Feed(c *gin.Context) {
+	//接收请求数据
 	FeedReq := FeedReq{}
-	c.ShouldBind(&FeedReq) //接收请求数据
-	var Video []Video
-	var feed []VideoResp
-	var user User
+	c.ShouldBind(&FeedReq)
+	//从数据库中查找Video，结合auther构造VideoResp
+	video, feed, user := []Video{}, []VideoResp{}, User{}
 	max := 30
-
-	global.DB.Find(&Video) //从数据中查找Video，构造VideoResp
-	if len(Video) > max {
-		Video = Video[:max]
+	global.DB.Find(&video)
+	if len(video) > max {
+		video = video[:max]
 	}
-	for _, v := range Video {
-		global.DB.Where("user_id = ?", v.UID).Find(&user)
+	for _, v := range video {
+		global.DB.Where("user_id = ?", v.Uid).Find(&user)
+		//关注待实现
 		userResp := GetUserResp(user, false)
-		media := GetVideoResp(v, userResp, false)
-		feed = append(feed, media)
+		//点赞待实现
+		videoResp := GetVideoResp(v, userResp, false)
+		feed = append(feed, videoResp)
 	}
 
 	c.JSON(200, FeedResp{

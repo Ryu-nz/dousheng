@@ -7,48 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//注册请求
-type RegisterReq struct {
-	Username string `form:"username" json:"username" binding:"required,max=32"`
-	Password string `form:"password" json:"password" binding:"required,max=32"`
-}
-
-//登录请求
-type LoginReq struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-}
-
-//获取用户信息请求
-type GetUserReq struct {
-	UserID int    `form:"user_id" json:"user_id"`
-	Token  string `form:"token" json:"token"`
-}
-
-//登录信息返回 userId + token
-type LoginResp struct {
-	Response
-	UserID int    `json:"user_id"`
-	Token  string `json:"token"`
-}
-
-//用户信息返回
-type UserResp struct {
-	UserID        int    `form:"id" json:"id"`
-	Username      string `form:"name" json:"name"`
-	FollowCount   int    `json:"follow_count"`
-	FollowerCount int    `json:"follower_count"`
-	IsFollow      bool   `json:"is_follow"`
-}
-
 //处理注册请求
 func UserRegister(c *gin.Context) {
 	RegistrForm := RegisterReq{}
 	//注意通过ShouldBind接收数据后再使用PostForm()无法再接到数据
 	if err := c.ShouldBind(&RegistrForm); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: err.Error() + "请求数据错误"})
 		return
 	}
 	user := User{Username: RegistrForm.Username, Password: RegistrForm.Password}
@@ -66,12 +30,14 @@ func UserRegister(c *gin.Context) {
 }
 
 // 处理登录请求
-func PasswordLogin(c *gin.Context) {
+func UserLogin(c *gin.Context) {
+	//接收数据
 	LoginForm := LoginReq{}
 	if err := c.ShouldBind(&LoginForm); err != nil {
 		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: "请求数据出错"})
 		return
 	}
+	//从数据库中查询数据
 	var user User
 	global.DB.Where("username = ? and password = ?", LoginForm.Username, LoginForm.Password).Find(&user)
 	if user.UserID != 0 {
@@ -88,9 +54,11 @@ func PasswordLogin(c *gin.Context) {
 
 // 处理获取自身信息请求
 func GetUser(c *gin.Context) {
-	GetUser := GetUserReq{}
+	//接收请求数据
+	GetUser := UserReq{}
 	c.ShouldBind(&GetUser)
 	Claims, err := NewJWT().ParseToken(GetUser.Token)
+	//解析token校验
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: err.Error()})
 		return
@@ -99,12 +67,10 @@ func GetUser(c *gin.Context) {
 	} else {
 		var user User
 		global.DB.Where("user_id = ?", Claims.UserID).Find(&user)
-		if user.UserID != 0 {
-			c.JSON(http.StatusOK, gin.H{
-				"status_code": 0,
-				"status_msg":  "success",
-				"user":        GetUserResp(user, false),
-			})
-		}
+		//返回数据
+		c.JSON(http.StatusOK, UserInfoResp{
+			Response: Response{StatusCode: 0},
+			UserResp: GetUserResp(user, false),
+		})
 	}
 }

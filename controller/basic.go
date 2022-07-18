@@ -23,7 +23,7 @@ type User struct {
 //视频对应结构
 type Video struct {
 	Vid           int       `gorm:"column:vid;primary_key" json:"vid"`
-	UID           int       `gorm:"column:uid" json:"uid"`
+	Uid           int       `gorm:"column:uid" json:"uid"`
 	Title         string    `gorm:"column:title" json:"title"`
 	PlayURL       string    `gorm:"column:play_url" json:"play_url"`
 	CoverURL      string    `gorm:"column:cover_url" json:"cover_url"`
@@ -32,13 +32,9 @@ type Video struct {
 	CreateTime    time.Time `gorm:"cloumn:create_time" json:"create_time"`
 }
 
-func GetUserResp(user User, IsFollow bool) UserResp {
-	UserResp := UserResp{
-		UserID:        user.UserID,
-		Username:      user.Username,
-		FollowCount:   user.FollowCount,
-		FollowerCount: user.FollowerCount,
-		IsFollow:      IsFollow,
-	}
-	return UserResp
+//点赞表对应结构
+type Favorite struct {
+	Uid        int  `gorm:"column:uid" json:"uid"`
+	Vid        int  `gorm:"column:vid" json:"vid"`
+	IsFavorite bool `gorm:"column:is_favorite" json:"is_favorite"`
 }
