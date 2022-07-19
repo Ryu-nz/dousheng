@@ -11,13 +11,13 @@ import (
 func CommentAction(c *gin.Context) {
 	//接收数据
 	commentReq := CommentActionReq{}
+	if err := c.ShouldBind(&commentReq); err != nil {
+		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: err.Error() + "请求数据错误"})
+		return
+	}
 	Msg, err := NewJWT().ParseToken(commentReq.Token)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: err.Error() + "Token解析错误"})
-		return
-	}
-	if err := c.ShouldBind(&commentReq); err != nil {
-		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: err.Error() + "请求数据错误"})
 		return
 	}
 	//操作数据库
