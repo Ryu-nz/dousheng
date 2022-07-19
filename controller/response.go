@@ -1,20 +1,19 @@
 package controller
 
+import "dousheng/global"
+
 //user response
-//登录信息返回 userId + token
 type LoginResp struct {
 	Response
 	UserID int    `json:"user_id"`
 	Token  string `json:"token"`
 }
 
-//查询信息返回
 type UserInfoResp struct {
 	Response
 	UserResp
 }
 
-//返回用户信息格式
 type UserResp struct {
 	UserID        int    `form:"id" json:"id"`
 	Username      string `form:"name" json:"name"`
@@ -36,7 +35,6 @@ func GetUserResp(user User, IsFollow bool) UserResp {
 }
 
 //feed、video response
-//返回视频结构
 type VideoResp struct {
 	Vid           int      `form:"id" json:"id"`
 	Auther        UserResp `form:"auther" json:"auther"`
@@ -48,7 +46,6 @@ type VideoResp struct {
 	Title         string   ` json:"title"`
 }
 
-//返回视频流结构
 type FeedResp struct {
 	Response
 	VideoList []VideoResp `json:"video_list,omitempty"`
@@ -56,9 +53,38 @@ type FeedResp struct {
 }
 
 //publish response
-
-//publish list 返回
 type ListResp struct {
 	Response
 	VideoList []VideoResp `json:"video_list,omitempty"`
+}
+
+//comment response
+type CommentActionResp struct {
+	Response
+	CommentResp
+}
+
+type CommentResp struct {
+	ID         int      `json:"id"`
+	User       UserResp `json:"user"`
+	Content    string   `json:"content"`
+	CreateDate string   `json:"create_date"`
+}
+
+func GetCommentResp(comment Comment) CommentResp {
+	resp, user := CommentResp{}, User{}
+	resp.ID = comment.CommentID
+	global.DB.Find(&user, comment.Uid)
+	if user.UserID == 0 {
+		return CommentResp{}
+	}
+	resp.User = GetUserResp(user, false)
+	resp.Content = comment.CommentText
+	resp.CreateDate = comment.CreateTime.Format("01-02")
+	return resp
+}
+
+type CommentListResp struct {
+	Response
+	CommentList []CommentResp `json:"comment_list"`
 }

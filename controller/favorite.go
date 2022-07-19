@@ -47,14 +47,7 @@ func FavoriteAction(c *gin.Context) {
 func FavoriteList(c *gin.Context) {
 	//接收请求数据并与token比对校验
 	ListReq := ListReq{}
-	if err := c.ShouldBind(&ListReq); err != nil {
-		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: err.Error() + "请求参数出错"})
-		return
-	}
-	if Msg, err := NewJWT().ParseToken(ListReq.Token); err != nil || Msg.UserID != ListReq.UserID {
-		c.JSON(http.StatusInternalServerError, Response{StatusCode: -1, StatusMsg: "token数据错误"})
-		return
-	}
+	Verify(c, &ListReq)
 	//根据user_id获取user和video
 	user, favorite, videoList := User{}, []Favorite{}, []VideoResp{}
 	global.DB.Find(&user, ListReq.UserID)

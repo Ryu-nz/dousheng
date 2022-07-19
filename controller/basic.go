@@ -38,3 +38,12 @@ type Favorite struct {
 	Vid        int  `gorm:"column:vid" json:"vid"`
 	IsFavorite bool `gorm:"column:is_favorite" json:"is_favorite"`
 }
+
+//评论表对应结构
+type Comment struct {
+	CommentID   int       `gorm:"column:comment_id;primary_key" json:"comment_id"`
+	Uid         int       `gorm:"column:uid" json:"uid"`
+	Vid         int  `gorm:"column:vid" json:"vid"`
+	CommentText string    `gorm:"column:comment_text" json:"comment_text"`
+	CreateTime  time.Time `gorm:"column:create_time" json:"create_time"`
+}
