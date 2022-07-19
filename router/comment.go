@@ -9,8 +9,8 @@ import (
 func Comment(Router *gin.RouterGroup) {
 	r := Router.Group("comment")
 	{
-		r.POST("axction/", func(c *gin.Context) { controller.CommentAction(c) })
+		r.POST("action/", func(c *gin.Context) { controller.CommentAction(c) })
 
-		r.GET("list", func(c *gin.Context) { controller.CommentList(c) })
+		r.GET("list/", func(c *gin.Context) { controller.CommentList(c) })
 	}
 }
