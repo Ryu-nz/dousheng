@@ -10,7 +10,7 @@
 
 #### 项目架构
 
-<img src="../Images/Readme/image-20220719150747167.png" alt="image-20220719150747167" style="zoom: 50%;" />
+<img src="https://github.com/Ryu-nz/diagrams/blob/main/pic/image-20220719150747167.png" alt="image-20220719150747167" style="zoom: 50%;" />
 
 #### 技术选型
 
